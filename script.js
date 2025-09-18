@@ -12,8 +12,8 @@ const DEFAULT_RTOL = 1e-12;
 const DEFAULT_ATOL = 1e-15;
 const DEFAULT_TTOTAL = 2000;
 const DEFAULT_NFRAMES = 1200;
-const DEFAULT_R_ESCAPE = Rg * 50;
-const TAU_CHUNK = 2000.0;
+const DEFAULT_R_ESCAPE = Rg * 200;
+const TAU_CHUNK = 20.0;
 const F_FLOOR = 1e-14;
 const HORIZON_MARGIN = 1.00001;
 const MAX_GEODESIC_POINTS = 200000;
@@ -313,8 +313,8 @@ class Particle {
       }
     }
     // check events
-    if (res.event === "horizon") { this.alive = false; this.state = "will fall"; }
-    else if (res.event === "escape") { this.alive = false; this.state = "will escape"; }
+    if (res.event === "horizon") { this.alive = false; this.state = "falling"; }
+    else if (res.event === "escape") { this.alive = false; this.state = "escaping"; }
 
     this._enforce_monotone_t();
     this._maybe_decimate();
@@ -667,7 +667,7 @@ class Simulation {
     const upto = Math.min(idx, p.x_obs.length-1);
     let valid = false;
     for (let i=0;i<=upto;i++) if (Number.isFinite(p.x_obs[i]) && Number.isFinite(p.y_obs[i])) { valid = true; break; }
-    if (valid) return "will Stay";
+    if (valid) return "active";
     const t_rel_needed = t_now - p.t_inject;
     if (p.t_tau.length>0 && t_rel_needed > p.t_tau[p.t_tau.length-1]) return "integrating";
     return "inactive";
@@ -712,11 +712,19 @@ class Simulation {
   for (const p of this.particles) {
     let x = "", y = "", v = "", theta = "", E = "", L = "", state = "";
     try {
-      const rr = p.current_xyv(t_now, idx);
-      x = Number(rr[0]).toPrecision(6);
-      y = Number(rr[1]).toPrecision(6);
-      v = Number(rr[2]).toPrecision(6);
-      theta = Number(rr[3]).toFixed(3);
+      // 追加：r_escape により統合が停止（逃逸）した粒子は table 上で x,y を Infinity とする
+      if (!p.alive && p.state === "escaping") {
+        x = "--";
+        y = "--";
+        v = "--";
+        theta = "--";
+      } else {
+        const rr = p.current_xyv(t_now, idx);
+        x = Number(rr[0]).toPrecision(6);
+        y = Number(rr[1]).toPrecision(6);
+        v = Number(rr[2]).toPrecision(6);
+        theta = Number(rr[3]).toFixed(6);
+      }
     } catch (e) {
       x = p.x0.toPrecision(6);
       y = p.y0.toPrecision(6);
@@ -823,11 +831,15 @@ class Simulation {
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = "#222";
         this.ctx.stroke();
+
+        /**/
         // auto-zoom if near boundary
-        if (Math.abs(xnow) > 0.95 * this.R_display || Math.abs(ynow) > 0.95 * this.R_display) {
+        if (Math.abs(xnow) > this.R_display || Math.abs(ynow) > this.R_display) {
           this.R_display *= 1.5;
           this.scale = Math.min(this.W, this.H) / (2*this.R_display);
         }
+        
+
       }
     }
   }
@@ -904,6 +916,12 @@ class Simulation {
     this._drawScene();
     // update table
     this._updateTable();
+
+    const ot = document.getElementById("observerTime");
+        if (ot) {
+            ot.textContent = "Observer Time: " + t_now.toFixed(6);
+        }
+
   }
 }
 
@@ -916,20 +934,38 @@ sim.dom.status.textContent = "Status: running";
   const canvas = sim.canvas;
   function resize() {
     const rect = canvas.getBoundingClientRect();
-    // keep internal pixel size equal to client size * devicePixelRatio for sharpness
     const dpr = window.devicePixelRatio || 1;
-    const w = Math.floor(rect.width);
-    const h = Math.floor(rect.height);
-    canvas.width = Math.max(300, Math.round(w * dpr));
-    canvas.height = Math.max(240, Math.round(h * dpr));
-    canvas.style.width = w + "px";
-    canvas.style.height = h + "px";
-    sim.W = canvas.width; sim.H = canvas.height;
+
+    const size = Math.min(rect.width, rect.height);
+
+    canvas.style.width  = size + "px";
+    canvas.style.height = size + "px";
+
+    // 内部解像度は dpr 倍に
+    canvas.width  = Math.round(size * dpr);
+    canvas.height = Math.round(size * dpr);
+
+    sim.W = canvas.width;
+    sim.H = canvas.height;
     sim.origin = [sim.W/2, sim.H/2];
+
+    // スケールを dpr に合わせる
+    sim.ctx.setTransform(1,0,0,1,0,0); // リセット
+    sim.ctx.scale(dpr, dpr);
+
     sim._drawScene();
   }
-  // initial call
   resize();
-  // call on window resize
   window.addEventListener("resize", () => { setTimeout(resize, 50); });
+
+  //devicePixelRatio 変化を監視して再調整
+  let lastDPR = window.devicePixelRatio;
+  setInterval(() => {
+    if (window.devicePixelRatio !== lastDPR) {
+      lastDPR = window.devicePixelRatio;
+      resize();
+    }
+  }, 500);
 })();
+
+

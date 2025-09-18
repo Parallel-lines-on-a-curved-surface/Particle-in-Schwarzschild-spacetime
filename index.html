@@ -26,9 +26,10 @@
     
   <div class="container">
     <div class="left">
-      <div class="title">Simulation Canvas</div>
+      <div class="title">Simulation Canvas</div> <div id="observerTime">Observer Time: 0.000</div>
       <canvas id="simCanvas"></canvas>
       <div class="footer__smallmuted"> 
+        測地線方程式 (自然単位系) ：
         $ \frac{d^2 r}{d\tau^2}  
          = 
         \frac{1}{2(1-\frac{1}{r})} 
@@ -59,14 +60,17 @@
 
         <div>
           <label>Theta [rad]</label>
+          <div class="Remarks"> ※ 粒子の速度方向  </div>
           <div class="row">
             <input id="sliderTheta" type="range" min="0" max="6.283185307179586" step="0.001" value="0.0">
             <div class="val" id="valTheta">0.00</div>
           </div>
+          
         </div>
 
         <div>
           <label>|V| / c</label>
+          <div class="Remarks"> ※ 観測者から見た粒子の速度 ( < 観測者から見た光速度 ) </div>
           <div class="row">
             <input id="sliderV" type="range" min="0" max="0.9999999999999999" step="0.0001" value="0.15">
             <div class="val" id="valV">0.150</div>
@@ -110,7 +114,7 @@
 
   <footer>
     <div class="footer__text">
-      <p>  Partocle table の ✓ はアニメーション一時停止中(Pause) のみ操作可能です。有効にすると該当粒子がハイライトされます。 </p>
+      <p>  Partocle Table の ✓ はアニメーション一時停止中(Pause) のみ操作可能です。有効にすると該当粒子がハイライトされます。 </p>
     </div>
   </footer>
 
