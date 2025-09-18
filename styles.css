@@ -319,32 +319,62 @@ footer p {
    Responsive Layout
 ================================ */
 
-/* スマホなど幅が600px以下のとき */
-@media (max-width: 600px) {
+/* スマホは常に適応 */
+@media (max-width: 800px) {
   .container {
-    flex-direction: column; /* 縦並び */
-    height: auto;           /* 高さを可変に */
+    flex-direction: column;
+    height: auto;
   }
 
   .left,
   .center,
   .right {
-    width: 100%;   /* 全幅表示 */
+    width: 100%;
     min-width: auto;
   }
 
   #simCanvas {
-    height: 90vw;  /* ビューポート幅に応じた高さ */
-    max-width: 100%; /* 画面に収める */
+    height: 90vw;
+    max-width: 100%;
     aspect-ratio: 1 / 1;
   }
 
   .row {
-  margin: 3% 5%;
+    margin: 3% 5%;
   }
 
- .simbtn{
-  margin: auto;
-  margin-top: 10%;
+  .simbtn {
+    margin: auto;
+    margin-top: 10%;
+  }
+}
+
+/* タブレット・PC は「縦長」の時だけ適応 */
+@media (min-width: 601px) and (orientation: portrait) {
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .left,
+  .center,
+  .right {
+    width: 100%;
+    min-width: auto;
+  }
+
+  #simCanvas {
+    height: 90vw;
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+  }
+
+  .row {
+    margin: 3% 5%;
+  }
+
+  .simbtn {
+    margin: auto;
+    margin-top: 10%;
   }
 }
