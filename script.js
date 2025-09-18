@@ -946,8 +946,8 @@ sim.dom.status.textContent = "Status: running";
     canvas.style.height = size + "px";
 
     // 内部解像度（物理解像度）を dpr 倍にする
-    canvas.width  = Math.round(size * dpr * 1.5);
-    canvas.height = Math.round(size * dpr * 1.5);
+    canvas.width  = Math.round(size * dpr); 
+    canvas.height = Math.round(size * dpr);
 
     // シミュレーション用に幅・高さを更新
     sim.W = canvas.width;
@@ -967,7 +967,6 @@ sim.dom.status.textContent = "Status: running";
   // ウィンドウリサイズ時
   window.addEventListener("resize", () => { setTimeout(resize, 50); });
 
-  // ✅ devicePixelRatio 変化を監視して再調整
   let lastDPR = window.devicePixelRatio;
   setInterval(() => {
     if (window.devicePixelRatio !== lastDPR) {
