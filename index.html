@@ -26,10 +26,23 @@
     
   <div class="container">
     <div class="left">
-      <div class="title">Simulation Canvas</div> <div id="observerTime">Observer Time: 0.000</div>
+      <div class="sim-header">
+        <div class="left-block">
+          <div class="title">Simulation Canvas</div>
+          <div id="observerTime">Observer Time: 0.000</div>
+        </div>
+
+        <div class="zoom-control">
+          <label for="zoomSlider">Zoom:</label>
+          <input id="zoomSlider" type="range" min="20" max="200" step="5" value="80">
+          <span id="zoomVal">80</span>
+        </div>
+      </div>
+
       <canvas id="simCanvas"></canvas>
       <div class="footer__smallmuted"> 
         測地線方程式 (自然単位系) ：
+        $ \frac{dt}{d\tau} = \frac{E}{1-\frac{1}{r}} $, &nbsp;
         $ \frac{d^2 r}{d\tau^2}  
          = 
         \frac{1}{2(1-\frac{1}{r})} 
@@ -114,7 +127,7 @@
           <tbody id="particlesBody"></tbody>
         </table>
       </div>
-      <div class="footer smallmuted" id="status">Status: ready</div>
+      <div class="footer smallmuted" id="status" style="color: rgba(253, 253, 253, 0);">Status: ready</div>
     </div>
   </div>
 

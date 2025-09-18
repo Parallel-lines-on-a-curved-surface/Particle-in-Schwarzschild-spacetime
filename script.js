@@ -13,7 +13,7 @@ const DEFAULT_ATOL = 1e-15;
 const DEFAULT_TTOTAL = 2000;
 const DEFAULT_NFRAMES = 1200;
 const DEFAULT_R_ESCAPE = Rg * 200;
-const TAU_CHUNK = 20.0;
+const TAU_CHUNK = 10.0;
 const F_FLOOR = 1e-14;
 const HORIZON_MARGIN = 1.00001;
 const MAX_GEODESIC_POINTS = 200000;
@@ -517,6 +517,7 @@ class Simulation {
     this.W = this.canvas.width;
     this.H = this.canvas.height;
     this.R_display = 80.0;
+    this.autoZoom = true; 
     this.scale = Math.min(this.W, this.H) / (2*this.R_display); // pixels per unit
     this.origin = [this.W/2, this.H/2];
 
@@ -535,7 +536,9 @@ class Simulation {
       btnTrails: document.getElementById("btnTrails"),
       btnPlay: document.getElementById("btnPlay"),
       tableBody: document.getElementById("particlesBody"),
-      status: document.getElementById("status")
+      status: document.getElementById("status"),
+      zoomSlider: document.getElementById("zoomSlider"), // ズームスライダー
+      zoomVal: document.getElementById("zoomVal")        // ズーム表示値
     };
 
     this._bindUI();
@@ -554,6 +557,17 @@ class Simulation {
     this.dom.btnReset.onclick = () => this._onReset();
     this.dom.btnTrails.onclick = () => this._toggleTrails();
     this.dom.btnPlay.onclick = () => this._togglePlay();
+
+
+    //  ズームスライダーイベント
+    if (this.dom.zoomSlider) {
+      this.dom.zoomSlider.addEventListener("input", () => {
+        this.autoZoom = false; // オートズームOFF
+        const z = Number(this.dom.zoomSlider.value);
+        this.setZoom(z);
+        if (this.dom.zoomVal) this.dom.zoomVal.textContent = z;
+      });
+    }
 
     // スライダーを上下キーで微調整できるようにする
     const sliders = [this.dom.sliderX, this.dom.sliderY, this.dom.sliderTheta, this.dom.sliderV];
@@ -622,6 +636,12 @@ class Simulation {
     );
   });
 
+  }
+
+    /* ---------------- ズーム制御 ---------------- */
+  setZoom(R_display) {
+    this.R_display = R_display;
+    this.scale = Math.min(this.W, this.H) / (2*this.R_display);
   }
 
   worldToCanvas(x,y) {
@@ -867,8 +887,8 @@ class Simulation {
           else this.ctx.lineTo(px, py);
         }
         this.ctx.lineWidth = this.highlighted.has(p.name) ? 6.5 : 2.5;
-        this.ctx.strokeStyle = this.highlighted.has(p.name) ? "orange" : color;
-        this.ctx.globalAlpha = this.highlighted.has(p.name) ? 1.0 : 0.9;
+        this.ctx.strokeStyle = this.highlighted.has(p.name) ? "gold" : color;
+        this.ctx.globalAlpha = this.highlighted.has(p.name) ? 1.0 : 0.5;
         this.ctx.stroke();
         this.ctx.globalAlpha = 1.0;
       }
@@ -880,23 +900,27 @@ class Simulation {
       } else {
         const [px,py] = this.worldToCanvas(xnow, ynow);
         const ms = this.highlighted.has(p.name) ? 12 : 6.5;
+        this.ctx.globalAlpha = this.highlighted.has(p.name) ? 1.0 : 0.8;
         this.ctx.beginPath();
-        this.ctx.fillStyle = this.highlighted.has(p.name) ? "orange" : color;
+        this.ctx.fillStyle = this.highlighted.has(p.name) ? "gold" : color;
         this.ctx.arc(px, py, ms, 0, Math.PI*2);
         this.ctx.fill();
         // outline
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = "#222";
         this.ctx.stroke();
+        this.ctx.globalAlpha = 1.0;
 
-        /**/
-        // auto-zoom if near boundary
-        if (Math.abs(xnow) > this.R_display || Math.abs(ynow) > this.R_display) {
+        //  オートズーム処理はフラグで制御
+        if (this.autoZoom &&
+            (Math.abs(xnow) > 0.95 * this.R_display || Math.abs(ynow) > 0.95 * this.R_display)) {
           this.R_display *= 1.5;
           this.scale = Math.min(this.W, this.H) / (2*this.R_display);
+          if (this.dom.zoomSlider) {
+            this.dom.zoomSlider.value = this.R_display;
+            if (this.dom.zoomVal) this.dom.zoomVal.textContent = this.R_display;
+          }
         }
-        
-
       }
     }
   }
