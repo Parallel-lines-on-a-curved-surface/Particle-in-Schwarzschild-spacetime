@@ -809,7 +809,7 @@ class Simulation {
           if (!started) { this.ctx.moveTo(px, py); started=true; }
           else this.ctx.lineTo(px, py);
         }
-        this.ctx.lineWidth = this.highlighted.has(p.name) ? 2.5 : 1.2;
+        this.ctx.lineWidth = this.highlighted.has(p.name) ? 6.5 : 2.5;
         this.ctx.strokeStyle = this.highlighted.has(p.name) ? "orange" : color;
         this.ctx.globalAlpha = this.highlighted.has(p.name) ? 1.0 : 0.9;
         this.ctx.stroke();
@@ -822,7 +822,7 @@ class Simulation {
         // draw nothing
       } else {
         const [px,py] = this.worldToCanvas(xnow, ynow);
-        const ms = this.highlighted.has(p.name) ? 12 : 5;
+        const ms = this.highlighted.has(p.name) ? 12 : 6.5;
         this.ctx.beginPath();
         this.ctx.fillStyle = this.highlighted.has(p.name) ? "orange" : color;
         this.ctx.arc(px, py, ms, 0, Math.PI*2);
@@ -853,7 +853,7 @@ class Simulation {
     // point
     this.ctx.beginPath();
     this.ctx.fillStyle = "red";
-    this.ctx.arc(px, py, 4.5, 0, Math.PI*2);
+    this.ctx.arc(px, py, 6.5, 0, Math.PI*2);
     this.ctx.fill();
     // arrow
     const arrowLen = (v === 0 ? 0 : (v * this.R_display/8 + this.R_display/18));
@@ -876,7 +876,7 @@ class Simulation {
     ctx.stroke();
     // arrow head
     const ang = Math.atan2(ey - sy, ex - sx);
-    const size = 10;
+    const size = 20;
     ctx.beginPath();
     ctx.moveTo(ex, ey);
     ctx.lineTo(ex - size*Math.cos(ang - Math.PI/6), ey - size*Math.sin(ang - Math.PI/6));
@@ -930,35 +930,44 @@ const sim = new Simulation({T_total: DEFAULT_TTOTAL, nframes: DEFAULT_NFRAMES});
 sim.dom.status.textContent = "Status: running";
 
 /* ---------------- Wire canvas scaling to window size ---------------- */
+/* ---------------- Wire canvas scaling to window size ---------------- */
 (function fitCanvas(){
   const canvas = sim.canvas;
+
   function resize() {
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
 
+    // 正方形（幅と高さの小さい方に合わせる）
     const size = Math.min(rect.width, rect.height);
 
+    // 見た目サイズ（CSS px）
     canvas.style.width  = size + "px";
     canvas.style.height = size + "px";
 
-    // 内部解像度は dpr 倍に
-    canvas.width  = Math.round(size * dpr);
-    canvas.height = Math.round(size * dpr);
+    // 内部解像度（物理解像度）を dpr 倍にする
+    canvas.width  = Math.round(size * dpr * 1.5);
+    canvas.height = Math.round(size * dpr * 1.5);
 
+    // シミュレーション用に幅・高さを更新
     sim.W = canvas.width;
     sim.H = canvas.height;
     sim.origin = [sim.W/2, sim.H/2];
 
-    // スケールを dpr に合わせる
-    sim.ctx.setTransform(1,0,0,1,0,0); // リセット
+    // スケーリングを dpr に合わせる
+    sim.ctx.setTransform(1,0,0,1,0,0); // 変換リセット
     sim.ctx.scale(dpr, dpr);
 
     sim._drawScene();
   }
+
+  // 初期化
   resize();
+
+  // ウィンドウリサイズ時
   window.addEventListener("resize", () => { setTimeout(resize, 50); });
 
-  //devicePixelRatio 変化を監視して再調整
+  // ✅ devicePixelRatio 変化を監視して再調整
   let lastDPR = window.devicePixelRatio;
   setInterval(() => {
     if (window.devicePixelRatio !== lastDPR) {
