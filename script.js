@@ -555,16 +555,49 @@ class Simulation {
     this.dom.btnTrails.onclick = () => this._toggleTrails();
     this.dom.btnPlay.onclick = () => this._togglePlay();
 
-    // keyboard
-    window.addEventListener("keydown", (ev) => {
-      if (ev.key === ' ') { ev.preventDefault(); this._togglePlay(); }
-      if (ev.key === 'r' || ev.key === 'R') { this._onReset(); }
+    // スライダーを上下キーで微調整できるようにする
+    const sliders = [this.dom.sliderX, this.dom.sliderY, this.dom.sliderTheta, this.dom.sliderV];
+    sliders.forEach(slider => {
+      slider.addEventListener("keydown", (ev) => {
+        let step = parseFloat(slider.step) || 0.1; // HTMLでstepを指定、なければ0.1
+        let value = parseFloat(slider.value);
+
+        if (ev.key === "ArrowUp") {
+          slider.value = Math.min(value + step, slider.max);
+          slider.dispatchEvent(new Event("input"));
+          ev.preventDefault();
+        }
+        if (ev.key === "ArrowDown") {
+          slider.value = Math.max(value - step, slider.min);
+          slider.dispatchEvent(new Event("input"));
+          ev.preventDefault();
+        }
+      });
     });
 
-    window.addEventListener("resize", () => {
-      // resize canvas responsively (optional)
-      // keep fixed size for now
+    // --- 各スライダーの上下ボタン処理 ---
+    document.querySelectorAll(".btn-up, .btn-down").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const slider = document.getElementById(btn.dataset.target);
+        if (!slider) return;
+
+        const step = Number(slider.step) || 1;
+        let val = Number(slider.value);
+
+        if (btn.classList.contains("btn-up")) {
+          val += step;
+        } else {
+          val -= step;
+        }
+
+        // 範囲を超えないようクリップ
+        val = Math.max(Number(slider.min), Math.min(Number(slider.max), val));
+
+        slider.value = val;
+        slider.dispatchEvent(new Event("input")); // 値表示とプレビュー更新
+      });
     });
+    
   }
 
   worldToCanvas(x,y) {

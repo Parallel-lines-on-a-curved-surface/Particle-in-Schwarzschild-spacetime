@@ -136,6 +136,14 @@ canvas {
   font-size: 1em;
 }
 
+.btn-down, .btn-up {
+  width: 20%;
+  height: auto;
+  font-size: 1em;
+  padding: 0;
+}
+
+
 .row {
   display: flex;
   align-items: center;
@@ -152,7 +160,7 @@ canvas {
   width: 100%;
 }
 
-.row button{
+.simbtn{
   width: 100%;
   font-size: 1.2em;
   margin: 3%;
