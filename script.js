@@ -954,11 +954,8 @@ sim.dom.status.textContent = "Status: running";
     sim.H = canvas.height;
     sim.origin = [sim.W/2, sim.H/2];
 
-    // スケーリングを dpr に合わせる
-    sim.ctx.setTransform(1,0,0,1,0,0); // 変換リセット
-    sim.ctx.scale(dpr, dpr);
 
-    sim._drawScene();
+    sim._drawScene()
   }
 
   // 初期化
