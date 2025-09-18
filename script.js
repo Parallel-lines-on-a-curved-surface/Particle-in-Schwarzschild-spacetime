@@ -575,29 +575,53 @@ class Simulation {
       });
     });
 
-    // --- 各スライダーの上下ボタン処理 ---
-    document.querySelectorAll(".btn-up, .btn-down").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const slider = document.getElementById(btn.dataset.target);
-        if (!slider) return;
+  // --- 各スライダーの上下ボタン処理（長押し対応版: PC+スマホ） ---
+  document.querySelectorAll(".btn-up, .btn-down").forEach(btn => {
+    let holdTimer;   // setInterval の ID 保管用
 
-        const step = Number(slider.step) || 1;
-        let val = Number(slider.value);
+    const stepSlider = () => {
+      const slider = document.getElementById(btn.dataset.target);
+      if (!slider) return;
 
-        if (btn.classList.contains("btn-up")) {
-          val += step;
-        } else {
-          val -= step;
-        }
+      const step = Number(slider.step) || 1;
+      let val = Number(slider.value);
 
-        // 範囲を超えないようクリップ
-        val = Math.max(Number(slider.min), Math.min(Number(slider.max), val));
+      if (btn.classList.contains("btn-up")) {
+        val += step;
+      } else {
+        val -= step;
+      }
 
-        slider.value = val;
-        slider.dispatchEvent(new Event("input")); // 値表示とプレビュー更新
-      });
+      // 範囲を超えないようクリップ
+      val = Math.max(Number(slider.min), Math.min(Number(slider.max), val));
+
+      slider.value = val;
+      slider.dispatchEvent(new Event("input")); // 値表示とプレビュー更新
+    };
+
+    // クリック（PCで1回だけ）
+    btn.addEventListener("click", stepSlider);
+
+    // --- マウス操作 ---
+    btn.addEventListener("mousedown", () => {
+      stepSlider(); // 押した瞬間も1回
+      holdTimer = setInterval(stepSlider, 200);
     });
-    
+    ["mouseup", "mouseleave"].forEach(ev =>
+      btn.addEventListener(ev, () => clearInterval(holdTimer))
+    );
+
+    // --- タッチ操作（スマホ/タブレット） ---
+    btn.addEventListener("touchstart", (e) => {
+      e.preventDefault(); // 画面スクロール抑制
+      stepSlider();
+      holdTimer = setInterval(stepSlider, 200);
+    });
+    ["touchend", "touchcancel"].forEach(ev =>
+      btn.addEventListener(ev, () => clearInterval(holdTimer))
+    );
+  });
+
   }
 
   worldToCanvas(x,y) {

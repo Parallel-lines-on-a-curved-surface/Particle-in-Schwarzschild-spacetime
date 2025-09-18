@@ -139,6 +139,7 @@ canvas {
 .btn-down, .btn-up {
   width: 20%;
   height: auto;
+  margin: auto 0;
   font-size: 1em;
   padding: 0;
 }
@@ -302,10 +303,10 @@ footer p {
   }
 
   .row {
-  margin: auto;
+  margin: 3% 5%;
   }
 
-  .row button{
+ .simbtn{
   margin: auto;
   margin-top: 10%;
   }
