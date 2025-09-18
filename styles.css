@@ -288,6 +288,7 @@ footer p {
   }
 
   #simCanvas {
+    height: 90vw;  /* ビューポート幅に応じた高さ */
     max-width: 100%; /* 画面に収める */
     aspect-ratio: 1 / 1;
   }

@@ -930,7 +930,7 @@ const sim = new Simulation({T_total: DEFAULT_TTOTAL, nframes: DEFAULT_NFRAMES});
 sim.dom.status.textContent = "Status: running";
 
 /* ---------------- Wire canvas scaling to window size ---------------- */
-/* ---------------- Wire canvas scaling to window size ---------------- */
+
 (function fitCanvas(){
   const canvas = sim.canvas;
 
