@@ -1,0 +1,288 @@
+/* ================================
+   Root Variables
+================================ */
+:root {
+  --bg: #f6f7fb;
+  --panel: #ffffff;
+  --muted: #666;
+  --accent: #ff6b6b;
+  --highlight: orange;
+  --font: "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ================================
+   Global
+================================ */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: #111;
+}
+
+/* ================================
+  header 
+================================ */
+
+/* headerに適応 */
+header {
+  width: 100%;       /* 横幅いっぱいに */
+  background-color: #222;
+  color: #fff;
+  padding: 1% 0;
+}
+
+.header-title {
+  position: relative;
+  text-align: center;
+  background-color: #222;
+  font-size: 1.2em;
+}
+
+.header-title h1 {
+  margin: 0;
+}
+
+.header-title a {
+  color: white;
+  text-decoration: none;
+}
+
+/* ================================
+   Layout
+================================ */
+.container {
+
+  margin: 0.5%;
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.left,
+.center,
+.right {
+    height: 80vh;
+  background: var(--panel);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.left {
+  display: flex;
+  width: 50%;
+  flex-direction: column;
+}
+
+.center {
+  /*flex: 1.0;*/
+  width: 20%;
+  /*min-width: 260px;*/
+  gap: 8px;
+}
+
+.right {
+  /*flex: 3;*/
+  width: 30%;
+  /*min-width: 320px;*/
+}
+
+
+/* ================================
+   Canvas
+================================ */
+canvas {
+  display: block;
+  border-radius: 6px;
+  background: #dadada68;
+}
+
+#simCanvas {
+  height: 90%;
+  aspect-ratio: 1 / 1;
+  display: block;
+}
+
+.footer__smallmuted {
+  flex: 1;                     /* 残りを占有 */
+  padding:1% 0 ;
+  display: flex;
+  align-items: center;          /* 縦中央 */
+  justify-content: center;      /* 横中央 */
+  font-size: clamp(12px, 1.5vw, 24px);
+}
+
+
+/* ================================
+   Controls
+================================ */
+.ctrl {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ctrl label {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 5%;
+}
+
+.row input[type=range] {
+  width: 100%;
+}
+
+.row button{
+  width: 10em;
+  margin: 2%;
+}
+
+.val {
+  min-width: 70px;
+  text-align: right;
+  color: var(--muted);
+  font-feature-settings: "tnum";
+}
+
+/* ================================
+   Buttons
+================================ */
+button {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+button.primary {
+  background: var(--accent);
+  color: white;
+  border: 0;
+}
+
+/* ================================
+   Table
+================================ */
+.table-wrap {
+
+  overflow: auto;
+  border: 1px solid #eee;
+  border-radius: 6px;
+}
+
+table {
+  width: 120%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+}
+
+th, td {
+  padding: 6px 8px;
+  text-align: center;
+  border-left: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* 折り返さず省略表示 */
+}
+
+th {
+  background: #fafafa;
+  font-weight: 700;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.checkbox-cell {
+  cursor: pointer;
+}
+
+/* ================================
+   Text
+================================ */
+.smallmuted {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.footer {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ================================
+  footer
+================================ */
+
+footer {
+  color: #fff;
+  background: #000000;
+  text-align: center;
+  bottom: 0;
+}
+
+.footer__text{
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+footer p {
+    padding: 1%;
+    font-size: 14px;
+}
+
+
+/* ================================
+   Responsive Layout
+================================ */
+
+/* スマホなど幅が600px以下のとき */
+@media (max-width: 600px) {
+  .container {
+    flex-direction: column; /* 縦並び */
+    height: auto;           /* 高さを可変に */
+  }
+
+  .left,
+  .center,
+  .right {
+    width: 100%;   /* 全幅表示 */
+    min-width: auto;
+  }
+
+  #simCanvas {
+    max-width: 100%; /* 画面に収める */
+    aspect-ratio: 1 / 1;
+  }
+
+  .row {
+  margin: auto;
+  }
+
+  .row button{
+  margin: auto;
+  }
+}

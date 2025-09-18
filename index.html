@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lets Schwarzschild Geodesic Particle Simulation </title>
+  <link rel="stylesheet" href="styles.css">
+  <!--tex表示用-->
+  <script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']], // インライン数式を $...$ で認識させる
+      displayMath: [['$$','$$'], ['\\[','\\]']] // ブロック数式
+    }
+  };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
+  <!--tex表示用-->
+</head>
+<body>
+  <header>
+        <div class="header-title">
+            <h1><a href="index.html">Schwarzschild Black Hole 近傍の粒子の運動</a></h1>
+        </div>
+  </header>
+    
+  <div class="container">
+    <div class="left">
+      <div class="title">Simulation Canvas</div>
+      <canvas id="simCanvas"></canvas>
+      <div class="footer__smallmuted"> 
+        $ \frac{d^2 r}{d\tau^2}  
+         = 
+        \frac{1}{2(1-\frac{1}{r})} 
+        ( - E^2 + (\frac{dr}{d\tau})^2  ) \frac{1}{r^2}
+          + (1-\frac{1}{r}) \frac{L^2}{r^3} 
+         $
+      </div>
+    </div>
+
+    <div class="center">
+      <div class="title">Controls</div>
+      <div class="ctrl">
+        <div>
+          <label>X</label>
+          <div class="row">
+            <input id="sliderX" type="range" min="-80" max="80" step="0.01" value="0.00">
+            <div class="val" id="valX">0.00</div>
+          </div>
+        </div>
+
+        <div>
+          <label>Y</label>
+          <div class="row">
+            <input id="sliderY" type="range" min="-80" max="80" step="0.01" value="-40.00">
+            <div class="val" id="valY">-40.00</div>
+          </div>
+        </div>
+
+        <div>
+          <label>Theta [rad]</label>
+          <div class="row">
+            <input id="sliderTheta" type="range" min="0" max="6.283185307179586" step="0.001" value="0.0">
+            <div class="val" id="valTheta">0.00</div>
+          </div>
+        </div>
+
+        <div>
+          <label>|V| / c</label>
+          <div class="row">
+            <input id="sliderV" type="range" min="0" max="0.9999999999999999" step="0.0001" value="0.15">
+            <div class="val" id="valV">0.150</div>
+          </div>
+        </div>
+
+        <div class="row" style="flex-direction:column;">
+          <button id="btnAdd">Add Particle</button>
+          <button id="btnReset">Reset</button>
+          <button id="btnTrails">Trails ON/OFF</button>
+          <button id="btnPlay">Pause</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="title">Particle Table</div>
+      <div class="table-wrap" style="flex:1;">
+        <table id="particlesTable">
+          <thead>
+            <tr>
+              <th style="width: 4ch;">✓</th>
+              <th style="width: 8ch;">Name</th>
+              <th style="width: 8ch;">x</th>
+              <th style="width: 8ch;">y</th>
+              <th style="width: 8ch;">Theta</th>
+              <th style="width: 8ch;">|V|/c</th>
+              <th style="width: 8ch;">E</th>
+              <th style="width: 8ch;">L</th>
+              <th style="width: 8ch;">State</th>
+            </tr>
+          </thead>
+          <tbody id="particlesBody"></tbody>
+        </table>
+      </div>
+      <div class="footer smallmuted" id="status">Status: ready</div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+  <footer>
+    <div class="footer__text">
+      <p>  Partocle table の ✓ はアニメーション一時停止中(Pause) のみ操作可能です。有効にすると該当粒子がハイライトされます。 </p>
+    </div>
+  </footer>
+
+</body>
+</html>
