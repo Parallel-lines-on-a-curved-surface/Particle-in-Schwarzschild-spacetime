@@ -24,10 +24,8 @@ html, body {
 /* ================================
   header 
 ================================ */
-
-/* headerに適応 */
 header {
-  width: 100%;       /* 横幅いっぱいに */
+  width: 100%;
   background-color: #222;
   color: #fff;
   padding: 1% 0;
@@ -50,12 +48,13 @@ header {
 }
 
 /* ================================
-   Layout
+   Layout (IMPROVED FOR FLEXIBILITY)
 ================================ */
 .container {
   height: 83%;
   margin: 0.5%;
   display: flex;
+  flex-wrap: wrap; /* IMPROVEMENT: Allow columns to wrap to the next line */
   gap: 8px;
   padding: 10px;
   box-sizing: border-box;
@@ -64,7 +63,6 @@ header {
 .left,
 .center,
 .right {
-
   background: var(--panel);
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
@@ -73,47 +71,36 @@ header {
   flex-direction: column;
 }
 
+/* IMPROVEMENT: Use flexible growth, shrink, and basis properties instead of fixed widths */
 .left {
-  display: flex;
-  width: 50%;
-  flex-direction: column;
+  flex: 2 1 500px; /* Will try to be 500px wide, can shrink, and will grow 2x faster than others */
 }
 
 .center {
+  flex: 1 1 280px; /* Will try to be 280px wide, can grow and shrink */
   height: 98%;
-  /*flex: 1.0;*/
-  width: 20%;
-  /*min-width: 260px;*/
   gap: 8px;
 }
 
 .right {
-  /*flex: 3;*/
-  width: 30%;
-  /*min-width: 320px;*/
+  flex: 1 1 320px; /* Will try to be 320px wide, can grow and shrink */
 }
 
 
 /* ================================
    Canvas
 ================================ */
-
 .sim-header {
   display: flex;
-  justify-content: space-between; /* 左と右に配置 */
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
-  position: relative; /* 中央配置用に relative にしておく */
+  position: relative;
 }
 
 .left-block {
   display: flex;
-  flex-direction: column; /* title 上, observerTime 下 */
-}
-
-.title {
-  font-weight: bold;
-  font-size: 1.2em;
+  flex-direction: column;
 }
 
 #observerTime {
@@ -121,7 +108,6 @@ header {
   color: #555;
 }
 
-/* 中央に zoom-control を置く */
 .zoom-control {
   position: absolute;
   left: 40%;
@@ -134,7 +120,6 @@ header {
   width: 150px;
 }
 
-
 canvas {
   display: block;
   background: #dadada68;
@@ -143,18 +128,18 @@ canvas {
 #simCanvas {
   width: 90%;
   max-height: 90%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1 / 1; /* This is key for keeping the simulation square */
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
 .footer__smallmuted {
-  flex: 1;                     /* 残りを占有 */
+  flex: 1;
   padding:0.8% 0 ;
   display: flex;
-  align-items: center;          /* 縦中央 */
-  justify-content: center;      /* 横中央 */
+  align-items: center;
+  justify-content: center;
   font-size: clamp(12px, 0.8vw, 24px);
 }
 
@@ -181,7 +166,6 @@ canvas {
   font-size: 1em;
   padding: 0;
 }
-
 
 .row {
   display: flex;
@@ -236,6 +220,7 @@ button.primary {
   overflow: auto;
   border: 1px solid #eee;
   border-radius: 6px;
+  flex: 1; /* Allow table wrapper to fill vertical space in .right column */
 }
 
 .table-wrap thead th{
@@ -243,7 +228,7 @@ button.primary {
 }
 
 table {
-  width: 120%;
+  width: 100%; /* Changed to 100% to fit within its flexible container */
   border-collapse: collapse;
   font-size: 13px;
   table-layout: fixed;
@@ -258,7 +243,7 @@ th, td {
   
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap; /* 折り返さず省略表示 */
+  white-space: nowrap;
 }
 
 th {
@@ -282,7 +267,7 @@ th {
 }
 
 .title {
-  font-size: 14px;
+  font-size: 1.2em; /* Increased for better readability */
   font-weight: 700;
   margin-bottom: 4px;
 }
@@ -296,7 +281,6 @@ th {
 /* ================================
   footer
 ================================ */
-
 footer {
   color: #fff;
   background: #000000;
@@ -314,67 +298,32 @@ footer p {
     font-size: 14px;
 }
 
-
 /* ================================
-   Responsive Layout
+   Responsive Layout (IMPROVED WITH ASPECT RATIO)
 ================================ */
 
-/* スマホは常に適応 */
-@media (max-width: 800px) {
+/* Switch to single-column layout if the screen is narrow OR taller than it is wide */
+@media (max-width: 850px) or (aspect-ratio < 1/1) {
   .container {
     flex-direction: column;
     height: auto;
   }
 
+  /* When in column mode, let flex items take full width and define their own height */
   .left,
   .center,
   .right {
+    flex-basis: auto; /* Reset the basis to allow natural height */
     width: 100%;
     min-width: auto;
   }
-
-  #simCanvas {
-    height: 90vw;
-    max-width: 100%;
-    aspect-ratio: 1 / 1;
-  }
-
-  .row {
-    margin: 3% 5%;
-  }
-
-  .simbtn {
-    margin: auto;
-    margin-top: 10%;
-  }
-}
-
-/* タブレット・PC は「縦長」の時だけ適応 */
-@media (min-width: 601px) and (orientation: portrait) {
-  .container {
-    flex-direction: column;
-    height: auto;
-  }
-
-  .left,
-  .center,
-  .right {
-    width: 100%;
-    min-width: auto;
+  
+  .center {
+    height: auto; /* Allow center column to size its content */
   }
 
   #simCanvas {
-    height: 90vw;
+    height: 90vw; /* Keep canvas responsive to viewport width */
     max-width: 100%;
-    aspect-ratio: 1 / 1;
-  }
-
-  .row {
-    margin: 3% 5%;
-  }
-
-  .simbtn {
-    margin: auto;
-    margin-top: 10%;
   }
 }

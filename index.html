@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Lets Schwarzschild Geodesic Particle Simulation </title>
   <link rel="stylesheet" href="styles.css">
-  <!--tex表示用-->
   <script>
   window.MathJax = {
     tex: {
@@ -14,9 +13,8 @@
     }
   };
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
-  <!--tex表示用-->
-</head>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
+  </head>
 <body>
   <header>
         <div class="header-title">
@@ -56,44 +54,44 @@
       <div class="title">Controls</div>
       <div class="ctrl">
         <div>
-          <label>X</label>
+          <label for="sliderX">X</label>
           <div class="row">
-            <button class="btn-down" data-target="sliderX">▼</button>
+            <button class="btn-down" data-target="sliderX" aria-label="Xの値を減少させる">▼</button>
             <input id="sliderX" type="range" min="-80" max="80" step="0.01" value="30.00">
-            <button class="btn-up" data-target="sliderX">▲</button>
+            <button class="btn-up" data-target="sliderX" aria-label="Xの値を増加させる">▲</button>
             <div class="val" id="valX">0.00</div>
           </div>
         </div>
 
         <div>
-          <label>Y</label>
+          <label for="sliderY">Y</label>
           <div class="row">
-            <button class="btn-down" data-target="sliderY">▼</button>
+            <button class="btn-down" data-target="sliderY" aria-label="Yの値を減少させる">▼</button>
             <input id="sliderY" type="range" min="-80" max="80" step="0.01" value="-40.00">
-            <button class="btn-up" data-target="sliderY">▲</button>
+            <button class="btn-up" data-target="sliderY" aria-label="Yの値を増加させる">▲</button>
             <div class="val" id="valY">-40.00</div>
           </div>
         </div>
 
         <div>
-          <label>Theta [rad]</label>
+          <label for="sliderTheta">Theta [rad]</label>
           <div class="Remarks"> ※ 粒子の速度方向  </div>
           <div class="row">
-            <button class="btn-down" data-target="sliderTheta">▼</button>
+            <button class="btn-down" data-target="sliderTheta" aria-label="Thetaの値を減少させる">▼</button>
             <input id="sliderTheta" type="range" min="0" max="6.283185307179586" step="0.01" value="1.05">
-            <button class="btn-up" data-target="sliderTheta">▲</button>
+            <button class="btn-up" data-target="sliderTheta" aria-label="Thetaの値を増加させる">▲</button>
             <div class="val" id="valTheta">0.00</div>
           </div>
           
         </div>
 
         <div>
-          <label>|V| / c</label>
+          <label for="sliderV">|V| / c</label>
           <div class="Remarks"> ※ 観測者から見た粒子の速度 ( < 観測者から見た光速度 ) </div>
           <div class="row">
-            <button class="btn-down" data-target="sliderV">▼</button>
+            <button class="btn-down" data-target="sliderV" aria-label="|V|/cの値を減少させる">▼</button>
             <input id="sliderV" type="range" min="0" max="0.9999999999999999" step="0.001" value="0.15">
-            <button class="btn-up" data-target="sliderV">▲</button>
+            <button class="btn-up" data-target="sliderV" aria-label="|V|/cの値を増加させる">▲</button>
             <div class="val" id="valV">0.150</div>
           </div>
         </div>
@@ -113,15 +111,15 @@
         <table id="particlesTable">
           <thead>
             <tr>
-              <th style="width: 4ch;">✓</th>
-              <th style="width: 8ch;">Name</th>
-              <th style="width: 8ch;">x</th>
-              <th style="width: 8ch;">y</th>
-              <th style="width: 8ch;">Theta</th>
-              <th style="width: 8ch;">|V|/c</th>
-              <th style="width: 8ch;">E</th>
-              <th style="width: 8ch;">L</th>
-              <th style="width: 8ch;">State</th>
+              <th scope="col" style="width: 4ch;">✓</th>
+              <th scope="col" style="width: 8ch;">Name</th>
+              <th scope="col" style="width: 8ch;">x</th>
+              <th scope="col" style="width: 8ch;">y</th>
+              <th scope="col" style="width: 8ch;">Theta</th>
+              <th scope="col" style="width: 8ch;">|V|/c</th>
+              <th scope="col" style="width: 8ch;">E</th>
+              <th scope="col" style="width: 8ch;">L</th>
+              <th scope="col" style="width: 8ch;">State</th>
             </tr>
           </thead>
           <tbody id="particlesBody"></tbody>
